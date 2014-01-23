@@ -1,0 +1,20 @@
+{
+  "name": "dockship",
+  "version": "0.2.0",
+  "description": "Deploy node.js apps on docker hosts",
+  "dependencies": {
+    "commander": "~2.1.0",
+    "dockerode": "~1.2.2",
+    "cli-table": "~0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "dockship": "bin/dockship"
+  },
+  "repository": "",
+  "author": "Sascha Reuter",
+  "license": "MIT"
+}
