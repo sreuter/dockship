@@ -14,7 +14,7 @@
   "bin": {
     "dockship": "bin/dockship"
   },
-  "repository": "",
+  "repository": "https://github.com/sreuter/dockship.git",
   "author": "Sascha Reuter",
   "license": "MIT"
 }
