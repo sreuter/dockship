@@ -10,7 +10,7 @@ http://braindump.ghost.io/meet-dockship/
 
 ## Goals behind this solution
 
-- to have App-management/PaaS-logic completly client-side
+- to have App-management/PaaS-logic completely client-side
 - to have no server-side dependencies beside clean dockerd installation API exposed via TCP
 
 ## Install
