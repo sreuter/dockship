@@ -1,0 +1,12 @@
+{
+  "name": "myapp",
+  "version": "0.2.0",
+  "description": "Example app for Dockship!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "MIT"
+}
