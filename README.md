@@ -2,8 +2,13 @@
 
 Deploy node.js apps on docker hosts.
 
+## Preamble
 
-## Goals
+Before you start, you may want to read about the motives behind Dockship in my recent blogpost:
+
+http://braindump.ghost.io/meet-dockship/
+
+## Goals behind this solution
 
 - to have App-management/PaaS-logic completly client-side
 - to have no server-side dependencies beside clean dockerd installation API exposed via TCP
