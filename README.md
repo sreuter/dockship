@@ -24,19 +24,21 @@ http://braindump.ghost.io/meet-dockship/
 ```
 $ dockship 
 
-  Usage: dockship command
+  Usage: dockship command [options]
 
   Options:
 
-    -h, --help        output usage information
-    -V, --version     output the version number
-                      
-    status            Status of running applications
-    list              List deployed applications
-    push   <appname>  Push a new application
-    start  <appname>  Start the application
-    stop   <appname>  Stop the application, also takes --all
-    purge  <appname>  Delete the application
+    -h, --help         output usage information
+    -V, --version      output the version number
+                       
+    status             Status of running applications
+    list               List deployed applications
+    push   <appname>   Push a new application
+    start  <appname>   Start the application
+    stop   <appname>   Stop the application, also takes --all
+    purge  <appname>   Purge application
+    -p, --port <port>  Optional host port, defaults to 4243
+    -h, --host <host>  Optional host address, defaults to http://127.0.0.1
 
 ```
 
