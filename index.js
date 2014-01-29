@@ -1,5 +1,10 @@
 var Docker = require('dockerode'),
+    dockgen = require('dockgen'),
+    temp = require('temp'),
+    fs = require('fs'),
     spawn = require('child_process').spawn;
+
+temp.track();
 
 var Dockship = function(opts) {
 
@@ -34,9 +39,17 @@ Dockship.prototype.deleteApp = function(appId, cb) {
 };
 
 Dockship.prototype.deployApp = function(appName, cb) {
-  var tar_stream = spawn('tar', ['cv', './']);
-  tar_stream.stderr.pipe(process.stderr);
-  this.docker.buildImage(tar_stream.stdout, {t: appName}, cb);
+  var self = this;
+  temp.mkdir('dockship', function(err, dir) {
+    if(err) return cb(err);
+    fs.writeFileSync(dir + '/Dockerfile', dockgen(process.cwd()));
+    var tar_stream = spawn('tar', [
+      'cv', './',
+      '-C', dir, 'Dockerfile'
+    ]);
+    tar_stream.stderr.pipe(process.stderr);
+    self.docker.buildImage(tar_stream.stdout, {t: appName}, cb);
+  });
 };
 
 
