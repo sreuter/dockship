@@ -1,6 +1,6 @@
 {
   "name": "dockship",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Deploy node.js apps on docker hosts",
   "dependencies": {
     "commander": "~2.1.0",
