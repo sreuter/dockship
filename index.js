@@ -8,11 +8,13 @@ temp.track();
 
 var Dockship = function(opts) {
 
-  opts = opts || {};
+  this.opts = opts || {};
+
+  this.opts.image_prefix = opts.image_prefix || 'dockship_';
 
   this.docker = new Docker({
-    host: opts.host || 'http://127.0.0.1',
-    port: opts.port || 4243
+    host: this.opts.host || 'http://127.0.0.1',
+    port: this.opts.port || 4243,
   });
 
 }
