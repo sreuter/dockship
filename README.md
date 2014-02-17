@@ -22,7 +22,7 @@ http://braindump.ghost.io/meet-dockship/
 ### Command overview
 
 ```
-$ dockship 
+$ dockship
 
   Usage: dockship command [options]
 
@@ -30,7 +30,7 @@ $ dockship
 
     -h, --help         output usage information
     -V, --version      output the version number
-                       
+
     status             Status of running applications
     list               List deployed applications
     push   <appname>   Push a new application
