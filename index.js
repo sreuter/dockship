@@ -22,21 +22,27 @@ var Dockship = function(opts) {
 // Image stuff
 
 Dockship.prototype.listApps = function(appName, cb) {
+  var self = this;
   this.docker.listImages(function(err, data) {
     if(err) return cb(err);
     cb(null, data.map(function(app) {
-      if(! appName || appName === app.RepoTags[0]) {
-        return {
-          name: app.RepoTags,
-          id: app.Id
-        };
+      // Check if image starts with predefined prefix
+      if(app.RepoTags[0].indexOf(self.opts.image_prefix) === 0) {
+        // If appName is set, only return images matching that
+        if(! appName || self.opts.image_prefix + appName + ':latest' === app.RepoTags[0]) {
+          return {
+            name: self.getAppName(app.RepoTags[0]),
+            id: app.Id
+          };
+        }
       }
     }).clean());
   });
 };
 
 Dockship.prototype.deleteApp = function(appId, cb) {
-  var app = this.docker.getImage(appId);
+  var self = this;
+  var app = this.docker.getImage(self.opts.image_prefix + appId + ':latest');
   app.remove(cb);
 };
 
@@ -50,7 +56,7 @@ Dockship.prototype.deployApp = function(appName, cb) {
       '-C', dir, 'Dockerfile'
     ]);
     tar_stream.stderr.pipe(process.stderr);
-    self.docker.buildImage(tar_stream.stdout, {t: appName}, cb);
+    self.docker.buildImage(tar_stream.stdout, {t: self.opts.image_prefix + appName}, cb);
   });
 };
 
@@ -58,7 +64,22 @@ Dockship.prototype.deployApp = function(appName, cb) {
 // Container stuff
 
 Dockship.prototype.listAppInstances = function(cb) {
-  this.docker.listContainers({all: false}, cb);
+  var self = this;
+  this.docker.listContainers({all: false}, function(err, instances) {
+    if(err) return cb(err);
+
+    instances = instances.map(function(instance) {
+      // Check if image starts with predefined prefix
+      if(instance.Image.indexOf(self.opts.image_prefix) === 0) {
+        // If appName is set, only return images matching that
+        instance.Image = self.getAppName(instance.Image);
+        return instance;
+      }
+    }).clean();
+
+    cb(null, instances);
+
+  });
 };
 
 Dockship.prototype.getAppIds = function(appName, cb) {
@@ -71,6 +92,7 @@ Dockship.prototype.getAppIds = function(appName, cb) {
 };
 
 Dockship.prototype.findAppIds = function(appName, cb) {
+  var self = this;
   this.listAppInstances(function(err, data) {
     if(err) return cb(err);
     cb(null, data.map(function(container) {
@@ -81,9 +103,24 @@ Dockship.prototype.findAppIds = function(appName, cb) {
   });
 };
 
+Dockship.prototype.getInstanceLogs = function(instanceId, stdout_stream, stderr_stream, cb) {
+  var container = this.docker.getContainer(instanceId);
+  container.attach({stdout: true, stderr: true, stream: true, logs: true, tty: false}, function(err, stream) {
+    if(err) {
+      cb(err);
+    } else {
+      //stream.pipe(process.stdout);
+      container.modem.demuxStream(stream, process.stdout, process.stdout);
+      cb();
+    }
+  });
+}
+
 Dockship.prototype.startApp = function(appId, cb) {
   this.docker.createContainer({
-    Image: appId
+    Image: appId,
+    AttachStdout: true,
+    AttachStderr: true,
   }, function(err, container) {
     if(err) return cb(err);
 
@@ -113,6 +150,16 @@ Dockship.prototype.startApp = function(appId, cb) {
 
   });
 };
+
+Dockship.prototype.getAppName = function(instanceName) {
+  return instanceName
+    .replace(new RegExp('^' + this.opts.image_prefix), '')
+    .replace(/:latest$/, '');
+};
+
+Dockship.prototype.getInstanceName = function(appName) {
+  return this.opts.image_prefix + appName + ':latest';
+}
 
 Dockship.prototype.stopApp = function(appId, cb) {
   var container = this.docker.getContainer(appId);

@@ -6,7 +6,7 @@
     "commander": "~2.1.0",
     "dockerode": "~1.2.2",
     "cli-table": "~0.2.0",
-    "dockgen": "~0.2.3",
+    "dockgen": "~0.2.6",
     "temp": "~0.6.0"
   },
   "devDependencies": {},
